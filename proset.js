@@ -130,8 +130,13 @@ A set is any number of cards between 3 and 7 where there
 are totaled either an even number of a colored dot or none of
 that color dot.
 
+There is always a set in any given draw of seven cards from the deck.
+
 To submit a set, note the numbers below each card and submit
 in a comma separated list. (ex: 1,2,3)
+
+If you need help, you can type 'help' at the prompt and it will provide
+you with all of the sets in the given draw.
   `
   console.log(intro)
   let inputValues = proset.deal()
