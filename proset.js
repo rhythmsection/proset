@@ -1,10 +1,6 @@
 const deck = require('./deck')
 const chalk = require('chalk')
-
-const readline = require('readline').createInterface({
-  input: process.stdin,
-  output: process.stdout
-})
+const rlSync = require('readline-sync')
 
 class ProSet {
   constructor () {
@@ -55,6 +51,8 @@ class ProSet {
     console.log(line3)
     console.log(bottom)
     console.log(labels)
+
+    return rlSync.question('Create a set (separate choices with commas): ')
   }
 
   select (arr) {
@@ -72,18 +70,19 @@ class ProSet {
 
     for (var val in dotObj) {
       if (dotObj[val] % 2 !== 0) {
-        console.log('That was not a set.')
-        return
+        return 'fail'
       }
     }
 
-    console.log('Great job! You found a set.')
+    return 'success'
   }
 }
 
-// Prompt
 const proset = new ProSet()
-const intro = `
+function runProSet () {
+  let done = false
+  let state = ''
+  const intro = `
 PROSET: A Game of Matching
 
 A set is any number of cards between 2 and 7 where there
@@ -92,31 +91,64 @@ that color dot.
 
 To submit a set, note the numbers below each card and submit
 in a comma separated list. (ex: 1,2,3)
-`
-console.log(intro)
-proset.deal()
+  `
+  console.log(intro)
+  let inputValues = proset.deal()
 
-// clean this up.
-// how do i make this recursive?
+  state = validateSetInput(inputValues)
 
-readline.question(
-  'Create a set (separate choices with commas): '
-  , values => {
-    if (values && values.match(/^[0-9,]/)) {
-      const keyArray = values.split(',')
-      for (var key of keyArray) {
-        if (parseInt(key) >= Object.keys(deck).length) {
-          console.log('A value is out of bounds.')
-          readline.close()
-          return
+  while (!done) {
+    switch (state) {
+      case 'success':
+        inputValues = rlSync.question('You found a set! Play again? (y/n): ')
+        if (inputValues.toLowerCase() === 'y') {
+          inputValues = proset.deal()
+          state = validateSetInput(inputValues)
+        } else {
+          console.log('See ya!')
+          done = true
         }
-      }
 
-      proset.select(values.split(','))
-    } else {
-      console.log('Sorry, could not read your input.')
+        break
+      case 'fail':
+        inputValues = rlSync.question('That is not a set. Try again or enter q to quit: ')
+
+        if (inputValues.toLowerCase() === 'q') {
+          console.log('Bye!')
+          done = true
+        } else {
+          state = validateSetInput(inputValues)
+        }
+
+        break
+      case 'badInput':
+        inputValues = rlSync.question('Try again or enter q to quit: ')
+
+        if (inputValues.toLowerCase() === 'q') {
+          console.log('Bye!')
+          done = true
+        } else {
+          state = validateSetInput(inputValues)
+        }
+    }
+  }
+}
+
+function validateSetInput (input) {
+  if (input && input.match(/^[0-9,]/)) {
+    const keyArray = input.split(',')
+    for (var key of keyArray) {
+      if (parseInt(key) >= Object.keys(deck).length) {
+        console.log('A value is out of bounds.')
+        return 'badInput'
+      }
     }
 
-    readline.close()
+    return proset.select(input.split(','))
+  } else {
+    console.log('Sorry, could not read your input.')
+    return 'badInput'
   }
-)
+}
+
+runProSet()
