@@ -194,8 +194,9 @@ function validateSetInput (input) {
   Validate user input looking for possible set.
   */
 
-  if (input && input.match(/^[0-9,]/)) {
-    const keyArray = input.split(',')
+  if (input && input.match(/[0-9,]/)) {
+    const stripped = input.replace(/\s+/g, '')
+    const keyArray = stripped.split(',')
     for (var key of keyArray) {
       if (parseInt(key) >= Object.keys(deck).length) {
         console.log('A value is out of bounds.')
@@ -203,7 +204,7 @@ function validateSetInput (input) {
       }
     }
 
-    return proset.select(input.split(','))
+    return proset.select(stripped.split(','))
   } else if (input && input.toLowerCase() === 'help') {
     proset.find()
     return 'helped'
