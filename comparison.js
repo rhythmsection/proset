@@ -101,7 +101,7 @@ function sixCardSet (deck) {
           for (var fifth in deck) {
             for (var sixth in deck) {
               let valid = true
-              const proposedSet = [first, second, third, fourth, fifth, sixth]
+              const proposedSet = [first, second, third, fourth, fifth, sixth].sort()
               const proposedSetString = proposedSet.join('')
               const cardsObj = objectify([...deck[first], ...deck[second], ...deck[third], ...deck[fourth], ...deck[fifth], ...deck[sixth]])
 
@@ -140,4 +140,4 @@ function sevenCardSet (deck) {
   return actualSets
 }
 
-module.exports = { threeCardSet, fourCardSet, fiveCardSet, sixCardSet, sevenCardSet }
+module.exports = { threeCardSet, fourCardSet, fiveCardSet, sixCardSet, sevenCardSet, objectify }
