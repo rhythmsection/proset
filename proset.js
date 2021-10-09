@@ -1,11 +1,25 @@
 const deck = require('./deck')
 const chalk = require('chalk')
 const rlSync = require('readline-sync')
+const { threeCardSet, fourCardSet, fiveCardSet, sixCardSet, sevenCardSet } = require('./comparison')
 
 class ProSet {
   constructor () {
     this.deck = deck
     this.draw = {}
+    this.actualSets = []
+  }
+
+  objectify (cards) {
+    const cardsObj = {}
+    for (var dot of cards) {
+      if (cardsObj[dot]) {
+        cardsObj[dot] += 1
+      } else {
+        cardsObj[dot] = 1
+      }
+    }
+    return cardsObj
   }
 
   deal () {
@@ -64,17 +78,13 @@ class ProSet {
     Evaluate user selection of cards for possible set.
     */
 
-    const dotObj = {}
+    const dotArray = []
 
     for (var card of arr) {
-      for (var dot of this.draw[card]) {
-        if (dotObj[dot]) {
-          dotObj[dot] += 1
-        } else {
-          dotObj[dot] = 1
-        }
-      }
+      dotArray.push(...this.draw[card])
     }
+
+    const dotObj = this.objectify(dotArray)
 
     for (var val in dotObj) {
       if (dotObj[val] % 2 !== 0) {
@@ -87,9 +97,21 @@ class ProSet {
 
   find () {
     /*
-    TODO: Find all available sets in the draw.
-    (Note: This is labor intensive without pre-generated list.)
+    Find all available sets in the draw.
+    (Note: This is labor intensive without pre-generated list, but pre-generated list is too memory intensive.)
     */
+    const threeCardSets = threeCardSet(this.draw)
+    const fourCardSets = fourCardSet(this.draw)
+    const fiveCardSets = fiveCardSet(this.draw)
+    const sixCardSets = sixCardSet(this.draw)
+    const sevenCardSets = sevenCardSet(this.draw)
+
+    const allSets = [...threeCardSets, ...fourCardSets, ...fiveCardSets, ...sixCardSets, ...sevenCardSets]
+
+    console.log('POSSIBLE SETS: ')
+    for (var set of allSets) {
+      console.log(set.split(''))
+    }
   }
 }
 
@@ -104,7 +126,7 @@ function runProSet () {
   const intro = `
 PROSET: A Game of Matching
 
-A set is any number of cards between 2 and 7 where there
+A set is any number of cards between 3 and 7 where there
 are totaled either an even number of a colored dot or none of
 that color dot.
 
@@ -140,6 +162,18 @@ in a comma separated list. (ex: 1,2,3)
         }
 
         break
+      case 'helped':
+        inputValues = rlSync.question('Would you ACTUALLY like to play this time? Or just cheat? (y/n): ')
+
+        if (inputValues.toLowerCase() === 'y') {
+          inputValues = proset.deal()
+          state = validateSetInput(inputValues)
+        } else {
+          console.log('See ya!')
+          done = true
+        }
+
+        break
       case 'badInput':
         inputValues = rlSync.question('Try again or enter q to quit: ')
 
@@ -149,6 +183,8 @@ in a comma separated list. (ex: 1,2,3)
         } else {
           state = validateSetInput(inputValues)
         }
+
+        break
     }
   }
 }
@@ -168,6 +204,9 @@ function validateSetInput (input) {
     }
 
     return proset.select(input.split(','))
+  } else if (input && input.toLowerCase() === 'help') {
+    proset.find()
+    return 'helped'
   } else {
     console.log('Sorry, could not read your input.')
     return 'badInput'
