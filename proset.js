@@ -11,6 +11,16 @@ class ProSet {
     this.draw = {}
     this.input = null
     this.state = ''
+
+    this.colorBlindMode = false
+  }
+
+  colorBlind () {
+    const cbm = rlSync.question('Would you like to use colorblind mode? (Replaces colors with numbers) (y/n): ')
+
+    if (cbm === 'y') {
+      this.colorBlindMode = true
+    }
   }
 
   deal () {
@@ -38,14 +48,24 @@ class ProSet {
     let line3 = ''
     let bottom = ''
     let labels = ''
+    let a, b, c, d, e, f
 
     for (var val in this.draw) {
-      const a = this.draw[val].includes('a') ? chalk.red('\u25CF') : ' '
-      const b = this.draw[val].includes('b') ? chalk.yellow('\u25CF') : ' '
-      const c = this.draw[val].includes('c') ? chalk.green('\u25CF') : ' '
-      const d = this.draw[val].includes('d') ? chalk.cyan('\u25CF') : ' '
-      const e = this.draw[val].includes('e') ? chalk.blue('\u25CF') : ' '
-      const f = this.draw[val].includes('f') ? chalk.magenta('\u25CF') : ' '
+      if (this.colorBlindMode) {
+        a = this.draw[val].includes('a') ? '\u2780' : ' '
+        b = this.draw[val].includes('b') ? '\u2781' : ' '
+        c = this.draw[val].includes('c') ? '\u2782' : ' '
+        d = this.draw[val].includes('d') ? '\u2783' : ' '
+        e = this.draw[val].includes('e') ? '\u2784' : ' '
+        f = this.draw[val].includes('f') ? '\u2785' : ' '
+      } else {
+        a = this.draw[val].includes('a') ? chalk.red('\u25CF') : ' '
+        b = this.draw[val].includes('b') ? chalk.yellow('\u25CF') : ' '
+        c = this.draw[val].includes('c') ? chalk.green('\u25CF') : ' '
+        d = this.draw[val].includes('d') ? chalk.cyan('\u25CF') : ' '
+        e = this.draw[val].includes('e') ? chalk.blue('\u25CF') : ' '
+        f = this.draw[val].includes('f') ? chalk.magenta('\u25CF') : ' '
+      }
 
       top = top + '┌──────┐ '
       line1 = line1 + `│ ${a}  ${b} │ `
@@ -155,6 +175,7 @@ class ProSet {
   you with all of the sets in the given draw.
     `
     console.log(intro)
+    this.colorBlind()
     this.input = this.deal()
 
     this.state = this.handleInput(this.input)
