@@ -5,11 +5,15 @@ const rlSync = require('readline-sync')
 class ProSet {
   constructor () {
     this.deck = deck
-    this.window = {}
+    this.draw = {}
   }
 
   deal () {
-    this.window = {}
+    /*
+    Choose seven random cards from the included deck and visualize them for the draw.
+    */
+
+    this.draw = {}
     const cardKeys = []
     let count = 0
 
@@ -19,7 +23,7 @@ class ProSet {
       if (!cardKeys.includes(cardKey)) {
         cardKeys.push(cardKey)
         count++
-        this.window[count] = this.deck[cardKey]
+        this.draw[count] = this.deck[cardKey]
       }
     }
 
@@ -30,20 +34,20 @@ class ProSet {
     let bottom = ''
     let labels = ''
 
-    for (var val in this.window) {
-      const a = this.window[val].includes('a') ? chalk.red('\u25CF') : ' '
-      const b = this.window[val].includes('b') ? chalk.yellow('\u25CF') : ' '
-      const c = this.window[val].includes('c') ? chalk.green('\u25CF') : ' '
-      const d = this.window[val].includes('d') ? chalk.cyan('\u25CF') : ' '
-      const e = this.window[val].includes('e') ? chalk.blue('\u25CF') : ' '
-      const f = this.window[val].includes('f') ? chalk.magenta('\u25CF') : ' '
+    for (var val in this.draw) {
+      const a = this.draw[val].includes('a') ? chalk.red('\u25CF') : ' '
+      const b = this.draw[val].includes('b') ? chalk.yellow('\u25CF') : ' '
+      const c = this.draw[val].includes('c') ? chalk.green('\u25CF') : ' '
+      const d = this.draw[val].includes('d') ? chalk.cyan('\u25CF') : ' '
+      const e = this.draw[val].includes('e') ? chalk.blue('\u25CF') : ' '
+      const f = this.draw[val].includes('f') ? chalk.magenta('\u25CF') : ' '
 
       top = top + '┌──────┐ '
       line1 = line1 + `│ ${a}  ${b} │ `
       line2 = line2 + `│ ${c}  ${d} │ `
       line3 = line3 + `│ ${e}  ${f} │ `
       bottom = bottom + '└──────┘ '
-      labels = labels + `   ${val}   `
+      labels = labels + `    ${val}    `
     }
     console.log(top)
     console.log(line1)
@@ -56,10 +60,14 @@ class ProSet {
   }
 
   select (arr) {
+    /*
+    Evaluate user selection of cards for possible set.
+    */
+
     const dotObj = {}
 
     for (var card of arr) {
-      for (var dot of this.window[card]) {
+      for (var dot of this.draw[card]) {
         if (dotObj[dot]) {
           dotObj[dot] += 1
         } else {
@@ -76,10 +84,21 @@ class ProSet {
 
     return 'success'
   }
+
+  find () {
+    /*
+    TODO: Find all available sets in the draw.
+    (Note: This is labor intensive without pre-generated list.)
+    */
+  }
 }
 
 const proset = new ProSet()
 function runProSet () {
+  /*
+  Main game running function.
+  */
+
   let done = false
   let state = ''
   const intro = `
@@ -135,6 +154,10 @@ in a comma separated list. (ex: 1,2,3)
 }
 
 function validateSetInput (input) {
+  /*
+  Validate user input looking for possible set.
+  */
+
   if (input && input.match(/^[0-9,]/)) {
     const keyArray = input.split(',')
     for (var key of keyArray) {
