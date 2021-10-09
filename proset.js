@@ -1,7 +1,7 @@
 const deck = require('./deck')
 const chalk = require('chalk')
 const rlSync = require('readline-sync')
-const { threeCardSet, fourCardSet, fiveCardSet, sixCardSet, sevenCardSet } = require('./comparison')
+const { threeCardSet, fourCardSet, fiveCardSet, sixCardSet, sevenCardSet, objectify } = require('./comparison')
 
 class ProSet {
   constructor () {
@@ -11,22 +11,6 @@ class ProSet {
     this.draw = {}
     this.input = null
     this.state = ''
-  }
-
-  objectify (cards) {
-    /*
-    Helper object maker.
-    TODO: Just store stuff like this to begin with?
-    */
-    const cardsObj = {}
-    for (var dot of cards) {
-      if (cardsObj[dot]) {
-        cardsObj[dot] += 1
-      } else {
-        cardsObj[dot] = 1
-      }
-    }
-    return cardsObj
   }
 
   deal () {
@@ -91,7 +75,7 @@ class ProSet {
       dotArray.push(...this.draw[card])
     }
 
-    const dotObj = this.objectify(dotArray)
+    const dotObj = objectify(dotArray)
 
     for (var val in dotObj) {
       if (dotObj[val] % 2 !== 0) {
