@@ -5,12 +5,19 @@ const { threeCardSet, fourCardSet, fiveCardSet, sixCardSet, sevenCardSet } = req
 
 class ProSet {
   constructor () {
-    this.deck = deck
-    this.draw = {}
     this.actualSets = []
+    this.deck = deck
+    this.done = false
+    this.draw = {}
+    this.input = null
+    this.state = ''
   }
 
   objectify (cards) {
+    /*
+    Helper object maker.
+    TODO: Just store stuff like this to begin with?
+    */
     const cardsObj = {}
     for (var dot of cards) {
       if (cardsObj[dot]) {
@@ -98,7 +105,7 @@ class ProSet {
   find () {
     /*
     Find all available sets in the draw.
-    (Note: This is labor intensive without pre-generated list, but pre-generated list is too memory intensive.)
+    TODO: Fix these functions
     */
     const threeCardSets = threeCardSet(this.draw)
     const fourCardSets = fourCardSet(this.draw)
@@ -113,110 +120,112 @@ class ProSet {
       console.log(set.split(''))
     }
   }
+
+  handleInput () {
+    /*
+    Validate user input looking for possible set.
+    */
+    if (!this.input) {
+      return 'badInput'
+    }
+
+    this.input = this.input.replace(/\s+/g, '').toLowerCase()
+
+    if (this.input.match(/[0-9,]/)) {
+      const keyArray = this.input.split(',')
+      for (var key of keyArray) {
+        if (parseInt(key) >= Object.keys(deck).length) {
+          console.log('A value is out of bounds.')
+          return 'badInput'
+        }
+      }
+
+      return this.select(keyArray)
+    } else if (this.input === 'help' || this.input === 'h') {
+      this.find()
+      return 'helped'
+    } else {
+      console.log('Sorry, could not read your input.')
+      return 'badInput'
+    }
+  }
+
+  run () {
+    /*
+    Main game running function.
+    */
+
+    const intro = `
+  ${chalk.red('P')}${chalk.yellow('R')}${chalk.green('O')}${chalk.cyan('S')}${chalk.blue('E')}${chalk.magenta('T')}: A Game of Matching
+
+  A set is any number of cards between 3 and 7 where there
+  are totaled either an even number of a colored dot or none of
+  that color dot.
+
+  There is always a set in any given draw of seven cards from the deck.
+
+  To submit a set, note the numbers below each card and submit
+  in a comma separated list. (ex: 1,2,3)
+
+  If you need help, you can type 'help' at the prompt and it will provide
+  you with all of the sets in the given draw.
+    `
+    console.log(intro)
+    this.input = this.deal()
+
+    this.state = this.handleInput(this.input)
+
+    while (!this.done) {
+      switch (this.state) {
+        case 'success':
+          this.input = rlSync.question('You found a set! Play again? (y/n): ').toLowerCase()
+          if (this.input === 'y') {
+            this.input = this.deal()
+            this.state = this.handleInput(this.input)
+          } else {
+            console.log('See ya!')
+            this.done = true
+          }
+
+          break
+        case 'fail':
+          this.input = rlSync.question('That is not a set. Try again or enter q to quit: ').toLowerCase()
+
+          if (this.input === 'q') {
+            console.log('Bye!')
+            this.done = true
+          } else {
+            this.state = this.handleInput(this.input)
+          }
+
+          break
+        case 'helped':
+          this.input = rlSync.question('Would you ACTUALLY like to play this time? Or just cheat? (y/n): ').toLowerCase()
+
+          if (this.input === 'y') {
+            this.input = this.deal()
+            this.state = this.handleInput(this.input)
+          } else {
+            console.log('See ya!')
+            this.done = true
+          }
+
+          break
+        case 'badInput':
+          this.input = rlSync.question('Try again or enter q to quit: ').toLowerCase()
+
+          if (this.input === 'q') {
+            console.log('Bye!')
+            this.done = true
+          } else {
+            this.state = this.handleInput(this.input)
+          }
+
+          break
+      }
+    }
+  }
 }
 
 const proset = new ProSet()
-function runProSet () {
-  /*
-  Main game running function.
-  */
-
-  let done = false
-  let state = ''
-  const intro = `
-${chalk.red('P')}${chalk.yellow('R')}${chalk.green('O')}${chalk.cyan('S')}${chalk.blue('E')}${chalk.magenta('T')}: A Game of Matching
-
-A set is any number of cards between 3 and 7 where there
-are totaled either an even number of a colored dot or none of
-that color dot.
-
-There is always a set in any given draw of seven cards from the deck.
-
-To submit a set, note the numbers below each card and submit
-in a comma separated list. (ex: 1,2,3)
-
-If you need help, you can type 'help' at the prompt and it will provide
-you with all of the sets in the given draw.
-  `
-  console.log(intro)
-  let inputValues = proset.deal()
-
-  state = validateSetInput(inputValues)
-
-  while (!done) {
-    switch (state) {
-      case 'success':
-        inputValues = rlSync.question('You found a set! Play again? (y/n): ')
-        if (inputValues.toLowerCase() === 'y') {
-          inputValues = proset.deal()
-          state = validateSetInput(inputValues)
-        } else {
-          console.log('See ya!')
-          done = true
-        }
-
-        break
-      case 'fail':
-        inputValues = rlSync.question('That is not a set. Try again or enter q to quit: ')
-
-        if (inputValues.toLowerCase() === 'q') {
-          console.log('Bye!')
-          done = true
-        } else {
-          state = validateSetInput(inputValues)
-        }
-
-        break
-      case 'helped':
-        inputValues = rlSync.question('Would you ACTUALLY like to play this time? Or just cheat? (y/n): ')
-
-        if (inputValues.toLowerCase() === 'y') {
-          inputValues = proset.deal()
-          state = validateSetInput(inputValues)
-        } else {
-          console.log('See ya!')
-          done = true
-        }
-
-        break
-      case 'badInput':
-        inputValues = rlSync.question('Try again or enter q to quit: ')
-
-        if (inputValues.toLowerCase() === 'q') {
-          console.log('Bye!')
-          done = true
-        } else {
-          state = validateSetInput(inputValues)
-        }
-
-        break
-    }
-  }
-}
-
-function validateSetInput (input) {
-  /*
-  Validate user input looking for possible set.
-  */
-
-  if (input && input.match(/[0-9,]/)) {
-    const stripped = input.replace(/\s+/g, '')
-    const keyArray = stripped.split(',')
-    for (var key of keyArray) {
-      if (parseInt(key) >= Object.keys(deck).length) {
-        console.log('A value is out of bounds.')
-        return 'badInput'
-      }
-    }
-
-    return proset.select(stripped.split(','))
-  } else if (input && input.toLowerCase() === 'help') {
-    proset.find()
-    return 'helped'
-  } else {
-    console.log('Sorry, could not read your input.')
-    return 'badInput'
-  }
-}
-
-runProSet()
+proset.run()
