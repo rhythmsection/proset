@@ -31,18 +31,18 @@ class ProSet {
     let labels = ''
 
     for (var val in this.window) {
-      const a = this.window[val].includes('a') ? chalk.red('+') : ' '
-      const b = this.window[val].includes('b') ? chalk.yellow('+') : ' '
-      const c = this.window[val].includes('c') ? chalk.green('+') : ' '
-      const d = this.window[val].includes('d') ? chalk.cyan('+') : ' '
-      const e = this.window[val].includes('e') ? chalk.blue('+') : ' '
-      const f = this.window[val].includes('f') ? chalk.magenta('+') : ' '
+      const a = this.window[val].includes('a') ? chalk.red('\u25CF') : ' '
+      const b = this.window[val].includes('b') ? chalk.yellow('\u25CF') : ' '
+      const c = this.window[val].includes('c') ? chalk.green('\u25CF') : ' '
+      const d = this.window[val].includes('d') ? chalk.cyan('\u25CF') : ' '
+      const e = this.window[val].includes('e') ? chalk.blue('\u25CF') : ' '
+      const f = this.window[val].includes('f') ? chalk.magenta('\u25CF') : ' '
 
-      top = top + '┌────┐ '
-      line1 = line1 + `│${a}  ${b}│ `
-      line2 = line2 + `│${c}  ${d}│ `
-      line3 = line3 + `│${e}  ${f}│ `
-      bottom = bottom + '└────┘ '
+      top = top + '┌──────┐ '
+      line1 = line1 + `│ ${a}  ${b} │ `
+      line2 = line2 + `│ ${c}  ${d} │ `
+      line3 = line3 + `│ ${e}  ${f} │ `
+      bottom = bottom + '└──────┘ '
       labels = labels + `   ${val}   `
     }
     console.log(top)
