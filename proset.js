@@ -8,7 +8,6 @@ const readline = require('readline').createInterface({
 
 class ProSet {
   constructor () {
-    // add all the cards.
     this.deck = deck
     this.window = {}
   }
@@ -36,7 +35,6 @@ class ProSet {
     let labels = ''
 
     for (var val in this.window) {
-      // console.log(val + ': ' + this.window[val])
       const a = this.window[val].includes('a') ? chalk.red('+') : ' '
       const b = this.window[val].includes('b') ? chalk.yellow('+') : ' '
       const c = this.window[val].includes('c') ? chalk.green('+') : ' '
@@ -85,9 +83,17 @@ class ProSet {
 
 // Prompt
 const proset = new ProSet()
+const intro = `
+PROSET: A Game of Matching
 
-console.log('Welcome to shitty ProSet. :D')
-// can i make THIS recursive?
+A set is any number of cards between 2 and 7 where there
+are totaled either an even number of a colored dot or none of
+that color dot.
+
+To submit a set, note the numbers below each card and submit
+in a comma separated list. (ex: 1,2,3)
+`
+console.log(intro)
 proset.deal()
 
 // clean this up.
@@ -114,3 +120,4 @@ readline.question(
     readline.close()
   }
 )
+
