@@ -5,4 +5,4 @@
 This is the 7-Card version, and is made to be played in the terminal.
 Download this, run `npm install` in the directory and run `node proset.js`.
 
-![alt tag](https://raw.githubusercontent.com/rhythmsection/proset/main/proset_screen.png)
+![alt tag](https://raw.githubusercontent.com/rhythmsection/proset/main/proset.png)
