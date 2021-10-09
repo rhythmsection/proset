@@ -124,7 +124,7 @@ function runProSet () {
   let done = false
   let state = ''
   const intro = `
-PROSET: A Game of Matching
+${chalk.red('P')}${chalk.yellow('R')}${chalk.green('O')}${chalk.cyan('S')}${chalk.blue('E')}${chalk.magenta('T')}: A Game of Matching
 
 A set is any number of cards between 3 and 7 where there
 are totaled either an even number of a colored dot or none of
