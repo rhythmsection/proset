@@ -5,6 +5,8 @@
 This is the 7-Card version, made to be played in the terminal.
 Download this, run `npm install` in the directory and run `node proset.js`.
 
+**Now includes colorblind mode!**
+
 ![alt tag](https://raw.githubusercontent.com/rhythmsection/proset/main/proset.png)
 
 
