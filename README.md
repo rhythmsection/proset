@@ -4,3 +4,5 @@
 
 This is the 7-Card version, and is made to be played in the terminal. Quality of life for UI is still in development. 
 Download this, run `npm install` in the directory (for chalk) and run `node proset.js`.
+
+![alt tag](https://raw.githubusercontent.com/rhythmsection/MHB/master/proset_screen.png)
