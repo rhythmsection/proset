@@ -1,4 +1,8 @@
 function objectify (cards) {
+  /*
+  Utility object maker.
+  TODO: Just store stuff like this to begin with?
+  */
   const cardsObj = {}
   for (var dot of cards) {
     if (cardsObj[dot]) {
