@@ -5,9 +5,7 @@ const { threeCardSet, fourCardSet, fiveCardSet, sixCardSet, sevenCardSet, object
 
 class ProSet {
   constructor () {
-    this.actualSets = []
     this.deck = deck
-    this.done = false
     this.draw = {}
     this.input = null
     this.state = ''
@@ -180,7 +178,9 @@ you with all of the sets in the given draw.
 
     this.state = this.handleInput(this.input)
 
-    while (!this.done) {
+    let done = false
+
+    while (!done) {
       switch (this.state) {
         case 'success':
           this.input = rlSync.question('You found a set! Play again? (y/n): ').toLowerCase()
@@ -189,7 +189,7 @@ you with all of the sets in the given draw.
             this.state = this.handleInput(this.input)
           } else {
             console.log('See ya!')
-            this.done = true
+            done = true
           }
 
           break
@@ -198,7 +198,7 @@ you with all of the sets in the given draw.
 
           if (this.input === 'q') {
             console.log('Bye!')
-            this.done = true
+            done = true
           } else {
             this.state = this.handleInput(this.input)
           }
@@ -212,7 +212,7 @@ you with all of the sets in the given draw.
             this.state = this.handleInput(this.input)
           } else {
             console.log('See ya!')
-            this.done = true
+            done = true
           }
 
           break
@@ -221,7 +221,7 @@ you with all of the sets in the given draw.
 
           if (this.input === 'q') {
             console.log('Bye!')
-            this.done = true
+            done = true
           } else {
             this.state = this.handleInput(this.input)
           }
