@@ -16,7 +16,7 @@ class ProSet {
   }
 
   colorBlind () {
-    const cbm = rlSync.question('Would you like to use colorblind mode? (Replaces colors with numbers) (y/n): ')
+    const cbm = rlSync.question('Would you like to turn on colorblind mode? (Replaces colors with numbers) (y/n): ')
 
     if (cbm === 'y') {
       this.colorBlindMode = true
@@ -67,11 +67,11 @@ class ProSet {
         f = this.draw[val].includes('f') ? chalk.magenta('\u25CF') : ' '
       }
 
-      top = top + '┌──────┐ '
+      top = top + '╭──────╮ '
       line1 = line1 + `│ ${a}  ${b} │ `
       line2 = line2 + `│ ${c}  ${d} │ `
       line3 = line3 + `│ ${e}  ${f} │ `
-      bottom = bottom + '└──────┘ '
+      bottom = bottom + '╰──────╯ '
       labels = labels + `    ${val}    `
     }
     console.log(top)
