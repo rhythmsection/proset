@@ -136,7 +136,7 @@ class ProSet {
     if (this.input.match(/[0-9,]/)) {
       const keyArray = this.input.split(',')
       for (var key of keyArray) {
-        if (parseInt(key) >= Object.keys(deck).length) {
+        if (parseInt(key) >= Object.keys(this.deck).length) {
           console.log('A value is out of bounds.')
           return 'badInput'
         }
