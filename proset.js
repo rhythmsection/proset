@@ -80,6 +80,7 @@ class ProSet {
     console.log(labels)
 
     this.input = rlSync.question('Create a set (separate choices with commas): ')
+    this.handleInput()
   }
 
   select (arr) {
@@ -179,8 +180,6 @@ you with all of the sets in the given draw.
     this.colorBlind()
     this.deal()
 
-    this.handleInput()
-
     let done = false
 
     while (!done) {
@@ -189,7 +188,6 @@ you with all of the sets in the given draw.
           this.input = rlSync.question('You found a set! Play again? (y/n): ').toLowerCase()
           if (this.input === 'y') {
             this.deal()
-            this.handleInput()
           } else {
             console.log('See ya!')
             done = true
@@ -212,7 +210,6 @@ you with all of the sets in the given draw.
 
           if (this.input === 'y') {
             this.deal()
-            this.handleInput()
           } else {
             console.log('See ya!')
             done = true
