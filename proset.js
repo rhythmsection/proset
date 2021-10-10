@@ -79,7 +79,7 @@ class ProSet {
     console.log(bottom)
     console.log(labels)
 
-    return rlSync.question('Create a set (separate choices with commas): ')
+    this.input = rlSync.question('Create a set (separate choices with commas): ')
   }
 
   select (arr) {
@@ -97,11 +97,12 @@ class ProSet {
 
     for (var val in dotObj) {
       if (dotObj[val] % 2 !== 0) {
-        return 'fail'
+        this.state = 'fail'
+        return
       }
     }
 
-    return 'success'
+    this.state = 'success'
   }
 
   find () {
@@ -128,7 +129,8 @@ class ProSet {
     Validate user input looking for possible set.
     */
     if (!this.input) {
-      return 'badInput'
+      this.state = 'badInput'
+      return
     }
 
     this.input = this.input.replace(/\s+/g, '').toLowerCase()
@@ -136,19 +138,20 @@ class ProSet {
     if (this.input.match(/[0-9,]/)) {
       const keyArray = this.input.split(',')
       for (var key of keyArray) {
-        if (parseInt(key) >= Object.keys(this.deck).length) {
+        if (parseInt(key) >= Object.keys(deck).length) {
           console.log('A value is out of bounds.')
-          return 'badInput'
+          this.state = 'badInput'
+          return
         }
       }
 
-      return this.select(keyArray)
+      this.select(keyArray)
     } else if (this.input === 'help' || this.input === 'h') {
       this.find()
-      return 'helped'
+      this.state = 'helped'
     } else {
       console.log('Sorry, could not read your input.')
-      return 'badInput'
+      this.state = 'badInput'
     }
   }
 
@@ -174,9 +177,9 @@ you with all of the sets in the given draw.
     `
     console.log(intro)
     this.colorBlind()
-    this.input = this.deal()
+    this.deal()
 
-    this.state = this.handleInput(this.input)
+    this.handleInput()
 
     let done = false
 
@@ -185,8 +188,8 @@ you with all of the sets in the given draw.
         case 'success':
           this.input = rlSync.question('You found a set! Play again? (y/n): ').toLowerCase()
           if (this.input === 'y') {
-            this.input = this.deal()
-            this.state = this.handleInput(this.input)
+            this.deal()
+            this.handleInput()
           } else {
             console.log('See ya!')
             done = true
@@ -200,7 +203,7 @@ you with all of the sets in the given draw.
             console.log('Bye!')
             done = true
           } else {
-            this.state = this.handleInput(this.input)
+            this.handleInput()
           }
 
           break
@@ -208,8 +211,8 @@ you with all of the sets in the given draw.
           this.input = rlSync.question('Would you ACTUALLY like to play this time? Or just cheat? (y/n): ').toLowerCase()
 
           if (this.input === 'y') {
-            this.input = this.deal()
-            this.state = this.handleInput(this.input)
+            this.deal()
+            this.handleInput()
           } else {
             console.log('See ya!')
             done = true
@@ -223,7 +226,7 @@ you with all of the sets in the given draw.
             console.log('Bye!')
             done = true
           } else {
-            this.state = this.handleInput(this.input)
+            this.handleInput()
           }
 
           break
